@@ -3,55 +3,72 @@ name: write-a-prd
 description: Generate a PRD from the client brief and write it as a local markdown file in issues/. Use when the user wants to turn a client request into a structured PRD.
 ---
 
-# Write a PRD
+This skill will be invoked when the user wants to create a PRD. You may skip steps if you don't consider them necessary.
 
-Read the client brief and generate a structured PRD, then write it to `issues/prd.md`.
+1. Ask the user for a long, detailed description of the problem they want to solve and any potential ideas for solutions.
 
-## How to run
+2. Explore the repo to verify their assertions and understand the current state of the codebase.
 
-1. Read `client-brief.md` to understand what the client wants.
-2. If the user has pointed you at additional context (existing code, past decisions), read that too.
-3. Write a PRD to `issues/prd.md` using the structure below.
-4. Tell the user where the file was written and ask if they want to review or iterate.
+3. Interview the user relentlessly about every aspect of this plan until you reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one.
 
-## PRD structure
+4. Sketch out the major modules you will need to build or modify to complete the implementation. Actively look for opportunities to extract deep modules that can be tested in isolation.
 
-```markdown
-# PRD: [Title]
+A deep module (as opposed to a shallow module) is one which encapsulates a lot of functionality in a simple, testable interface which rarely changes.
+
+Check with the user that these modules match their expectations. Check with the user which modules they want tests written for.
+
+5. Once you have a complete understanding of the problem and solution, use the template below to write the PRD. The PRD should be written as a local markdown file at `issues/prd.md`. Create the `issues/` directory if it doesn't exist. Do NOT submit a GitHub issue or call any external service.
+
+<prd-template>
 
 ## Problem Statement
 
-[What problem are we solving and why does it matter?]
+The problem that the user is facing, from the user's perspective.
 
 ## Solution
 
-[High-level description of what we're building.]
+The solution to the problem, from the user's perspective.
 
 ## User Stories
 
-[Numbered list: "As a [role], I want [capability], so that [benefit]."]
+A LONG, numbered list of user stories. Each user story should be in the format of:
+
+1. As an <actor>, I want a <feature>, so that <benefit>
+
+<user-story-example>
+1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending
+</user-story-example>
+
+This list of user stories should be extremely extensive and cover all aspects of the feature.
 
 ## Implementation Decisions
 
-[Key technical choices, constraints, and trade-offs.]
+A list of implementation decisions that were made. This can include:
+
+- The modules that will be built/modified
+- The interfaces of those modules that will be modified
+- Technical clarifications from the developer
+- Architectural decisions
+- Schema changes
+- API contracts
+- Specific interactions
+
+Do NOT include specific file paths or code snippets. They may end up being outdated very quickly.
 
 ## Testing Decisions
 
-[How will we verify this works? What tests are needed?]
+A list of testing decisions that were made. Include:
+
+- A description of what makes a good test (only test external behavior, not implementation details)
+- Which modules will be tested
+- Prior art for the tests (i.e. similar types of tests in the codebase)
 
 ## Out of Scope
 
-[Explicitly list what we are NOT building in this iteration.]
+A description of the things that are out of scope for this PRD.
 
 ## Further Notes
 
-[Anything else relevant — open questions, risks, dependencies.]
-```
+Any further notes about the feature.
 
-## Rules
-
-- Write the PRD to `issues/prd.md`. Create the `issues/` directory if it doesn't exist.
-- Do not submit a GitHub issue or call any external service.
-- Keep user stories focused and independently testable.
-- Be specific in implementation decisions — vague decisions create ambiguous work.
-- "Out of scope" is as important as scope — include it.
+</prd-template>
