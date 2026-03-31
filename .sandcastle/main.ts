@@ -29,7 +29,7 @@ const MAX_ITERATIONS = 10;
 // Hooks run inside the sandbox before the agent starts each iteration.
 // npm install ensures the sandbox always has fresh dependencies.
 const hooks = {
-  onSandboxReady: [{ command: "npm install" }],
+  onSandboxReady: [{ command: "pnpm install" }],
 };
 
 // Copy node_modules from the host into the worktree before each sandbox
@@ -69,7 +69,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
   const planMatch = plan.stdout.match(/<plan>([\s\S]*?)<\/plan>/);
   if (!planMatch) {
     throw new Error(
-      "Planning agent did not produce a <plan> tag.\n\n" + plan.stdout,
+      "Planning agent did not produce a <plan> tag.\n\n" + plan.stdout
     );
   }
 
@@ -85,7 +85,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
   }
 
   console.log(
-    `Planning complete. ${issues.length} issue(s) to work in parallel:`,
+    `Planning complete. ${issues.length} issue(s) to work in parallel:`
   );
   for (const issue of issues) {
     console.log(`  #${issue.number}: ${issue.title} → ${issue.branch}`);
@@ -121,15 +121,15 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
         },
         // Each agent starts on its own branch.
         branch: issue.branch,
-      }),
-    ),
+      })
+    )
   );
 
   // Log any agents that threw (network error, sandbox crash, etc.).
   for (const [i, outcome] of settled.entries()) {
     if (outcome.status === "rejected") {
       console.error(
-        `  ✗ #${issues[i]!.number} (${issues[i]!.branch}) failed: ${outcome.reason}`,
+        `  ✗ #${issues[i]!.number} (${issues[i]!.branch}) failed: ${outcome.reason}`
       );
     }
   }
@@ -140,7 +140,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
     .map((outcome, i) => ({ outcome, issue: issues[i]! }))
     .filter(
       (
-        entry,
+        entry
       ): entry is {
         outcome: PromiseFulfilledResult<
           Awaited<ReturnType<typeof sandcastle.run>>
@@ -148,14 +148,14 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
         issue: (typeof issues)[number];
       } =>
         entry.outcome.status === "fulfilled" &&
-        entry.outcome.value.commits.length > 0,
+        entry.outcome.value.commits.length > 0
     )
     .map((entry) => entry.issue);
 
   const completedBranches = completedIssues.map((i) => i.branch);
 
   console.log(
-    `\nExecution complete. ${completedBranches.length} branch(es) with commits:`,
+    `\nExecution complete. ${completedBranches.length} branch(es) with commits:`
   );
   for (const branch of completedBranches) {
     console.log(`  ${branch}`);
