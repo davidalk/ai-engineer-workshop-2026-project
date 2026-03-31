@@ -32,7 +32,7 @@ Explore the repo.
 
 # IMPLEMENTATION
 
-Complete the task.
+Use /tdd to complete the task.
 
 # FEEDBACK LOOPS
 
