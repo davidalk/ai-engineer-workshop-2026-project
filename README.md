@@ -5,7 +5,7 @@ A full-stack course platform (think a mini Udemy) built with React Router, TypeS
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) v22+
-- [pnpm](https://pnpm.io/) v9+ (enabled via `corepack enable`)
+- [npm](https://www.npmjs.com/) v10+
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI installed
 - A Claude Pro or Max subscription
 
@@ -13,14 +13,14 @@ A full-stack course platform (think a mini Udemy) built with React Router, TypeS
 
 ```bash
 # Install dependencies
-pnpm install
+npm install
 
 # Run database migrations and seed data
-pnpm db:migrate
-pnpm db:seed
+npm run db:migrate
+npm run db:seed
 
 # Start the dev server
-pnpm dev
+npm run dev
 ```
 
 The app will be running at `http://localhost:5173`.
@@ -31,12 +31,12 @@ See `client-brief.md` for the starting point and project context.
 
 | Command          | Description                  |
 | ---------------- | ---------------------------- |
-| `pnpm dev`       | Start the development server |
-| `pnpm build`     | Build for production         |
-| `pnpm test`      | Run tests with Vitest        |
-| `pnpm typecheck` | Type-check the project       |
-| `pnpm db:migrate`| Run database migrations      |
-| `pnpm db:seed`   | Seed the database            |
+| `npm run dev`        | Start the development server |
+| `npm run build`      | Build for production         |
+| `npm test`           | Run tests with Vitest        |
+| `npm run typecheck`  | Type-check the project       |
+| `npm run db:migrate` | Run database migrations      |
+| `npm run db:seed`    | Seed the database            |
 
 ## Tech Stack
 
