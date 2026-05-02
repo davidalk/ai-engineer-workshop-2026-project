@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import type { Route } from "./+types/dashboard";
 import { getUserEnrolledCourses } from "~/services/enrollmentService";
 import { calculateProgress, getCompletedLessonCount, getTotalLessonCount, getNextIncompleteLesson } from "~/services/progressService";
+import { getUserGamification } from "~/services/gamificationService";
 import { getCurrentUserId } from "~/lib/session";
 import { Card, CardContent, CardFooter, CardHeader } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
@@ -59,7 +60,9 @@ export async function loader({ request }: Route.LoaderArgs) {
   const completedCourses = coursesWithProgress.filter((c) => c.isCompleted);
   const inProgressCourses = coursesWithProgress.filter((c) => !c.isCompleted);
 
-  return { inProgressCourses, completedCourses };
+  const gamification = getUserGamification(currentUserId);
+
+  return { inProgressCourses, completedCourses, gamification };
 }
 
 function DashboardCardSkeleton() {
@@ -102,7 +105,7 @@ export function HydrateFallback() {
 }
 
 export default function Dashboard({ loaderData }: Route.ComponentProps) {
-  const { inProgressCourses, completedCourses } = loaderData;
+  const { inProgressCourses, completedCourses, gamification } = loaderData;
   const totalCourses = inProgressCourses.length + completedCourses.length;
 
   return (
@@ -120,6 +123,9 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
         <h1 className="text-3xl font-bold">My Dashboard</h1>
         <p className="mt-1 text-muted-foreground">
           Track your learning progress
+          {gamification && gamification.totalPoints > 0 && (
+            <> — {gamification.totalPoints} points</>
+          )}
         </p>
       </div>
 

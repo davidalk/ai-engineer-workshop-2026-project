@@ -11,6 +11,7 @@ import {
   getCompletedLessonCount,
   getTotalLessonCount,
 } from "~/services/progressService";
+import { getUserGamification } from "~/services/gamificationService";
 import { getCountryTierInfo, COUNTRIES } from "~/lib/ppp";
 import { isTeamAdmin } from "~/services/teamService";
 
@@ -46,6 +47,10 @@ export async function loader({ request }: Route.LoaderArgs) {
       })
     : [];
 
+  const gamification = currentUserId
+    ? getUserGamification(currentUserId)
+    : null;
+
   return {
     users: users.map((u) => ({ id: u.id, name: u.name, role: u.role })),
     currentUser: currentUser
@@ -56,6 +61,7 @@ export async function loader({ request }: Route.LoaderArgs) {
           avatarUrl: currentUser.avatarUrl ?? null,
         }
       : null,
+    gamification,
     recentCourses,
     devCountry,
     countryTierInfo,
@@ -68,6 +74,7 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
   const {
     users,
     currentUser,
+    gamification,
     recentCourses,
     devCountry,
     countryTierInfo,
@@ -79,6 +86,7 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
     <div className="flex h-screen overflow-hidden">
       <Sidebar
         currentUser={currentUser}
+        gamification={gamification}
         recentCourses={recentCourses}
         isTeamAdmin={userIsTeamAdmin}
       />

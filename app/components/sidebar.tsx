@@ -34,8 +34,14 @@ interface RecentCourse {
   progress: number;
 }
 
+interface GamificationData {
+  totalPoints: number;
+  lastActivityDate: string | null;
+}
+
 interface SidebarProps {
   currentUser: CurrentUser | null;
+  gamification?: GamificationData | null;
   recentCourses?: RecentCourse[];
   isTeamAdmin?: boolean;
 }
@@ -94,6 +100,7 @@ function isVisible(item: NavItem, role: UserRole | null): boolean {
 
 export function Sidebar({
   currentUser,
+  gamification,
   recentCourses = [],
   isTeamAdmin = false,
 }: SidebarProps) {
@@ -220,6 +227,11 @@ export function Sidebar({
               <div className="truncate text-xs capitalize text-sidebar-foreground/50">
                 {currentUser.role}
               </div>
+              {gamification && (
+                <div className="truncate text-xs text-sidebar-foreground/50">
+                  {gamification.totalPoints} points
+                </div>
+              )}
             </div>
             <NavLink
               to="/settings"

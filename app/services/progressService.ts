@@ -8,6 +8,7 @@ import {
   enrollments,
   LessonProgressStatus,
 } from "~/db/schema";
+import { awardPoints } from "~/services/gamificationService";
 
 // ─── Progress Service ───
 // Handles lesson completion tracking and course progress calculation.
@@ -58,28 +59,36 @@ export function getLessonProgressForCourse(userId: number, courseId: number) {
 export function markLessonComplete(userId: number, lessonId: number) {
   const existing = getLessonProgress(userId, lessonId);
 
-  if (existing) {
-    return db
-      .update(lessonProgress)
-      .set({
-        status: LessonProgressStatus.Completed,
-        completedAt: new Date().toISOString(),
-      })
-      .where(eq(lessonProgress.id, existing.id))
-      .returning()
-      .get();
+  if (existing && existing.status === LessonProgressStatus.Completed) {
+    return existing;
   }
 
-  return db
-    .insert(lessonProgress)
-    .values({
-      userId,
-      lessonId,
-      status: LessonProgressStatus.Completed,
-      completedAt: new Date().toISOString(),
-    })
-    .returning()
-    .get();
+  return db.transaction((tx) => {
+    const result = existing
+      ? tx
+          .update(lessonProgress)
+          .set({
+            status: LessonProgressStatus.Completed,
+            completedAt: new Date().toISOString(),
+          })
+          .where(eq(lessonProgress.id, existing.id))
+          .returning()
+          .get()
+      : tx
+          .insert(lessonProgress)
+          .values({
+            userId,
+            lessonId,
+            status: LessonProgressStatus.Completed,
+            completedAt: new Date().toISOString(),
+          })
+          .returning()
+          .get();
+
+    awardPoints(tx, userId, 10, "lesson_complete", "lesson", lessonId);
+
+    return result;
+  });
 }
 
 export function markLessonInProgress(userId: number, lessonId: number) {

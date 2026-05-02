@@ -253,3 +253,25 @@ export const videoWatchEvents = sqliteTable("video_watch_events", {
     .notNull()
     .$defaultFn(() => new Date().toISOString()),
 });
+
+export const userGamification = sqliteTable("user_gamification", {
+  userId: integer("user_id")
+    .primaryKey()
+    .references(() => users.id),
+  totalPoints: integer("total_points").notNull().default(0),
+  lastActivityDate: text("last_activity_date"),
+});
+
+export const pointsHistory = sqliteTable("points_history", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
+  points: integer("points").notNull(),
+  reason: text("reason").notNull(),
+  relatedEntityType: text("related_entity_type"),
+  relatedEntityId: integer("related_entity_id"),
+  createdAt: text("created_at")
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
+});
